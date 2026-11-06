@@ -3,3 +3,9 @@ dist/
 .env
 .env.*
 !.env.example
+*.log
+.DS_Store
+
+# Hoplite sandbox runtime files (settings.json is committed)
+.hoplite/*
+!.hoplite/settings.json

@@ -1,0 +1,21 @@
+{
+  "name": "shinkanshen",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shinkanshen \u2014 Token Staking & Yield Farming DApp for the BNB Smart Chain (BEP-20) ecosystem",
+  "type": "module",
+  "packageManager": "pnpm@10.34.2",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm --filter @shinkanshen/contracts test",
+    "typecheck": "pnpm -r typecheck",
+    "chain": "pnpm --filter @shinkanshen/contracts chain",
+    "deploy:local": "pnpm --filter @shinkanshen/contracts deploy:local",
+    "export:web": "pnpm --filter @shinkanshen/contracts export:web",
+    "dev": "pnpm --filter @shinkanshen/web dev",
+    "dev:local": "node scripts/dev-local.mjs"
+  }
+}

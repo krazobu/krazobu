@@ -1,0 +1,26 @@
+{
+  "name": "@shinkanshen/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "hardhat build",
+    "test": "hardhat test",
+    "typecheck": "hardhat build && tsc --noEmit",
+    "chain": "hardhat node --network localnode",
+    "deploy:local": "hardhat ignition deploy ignition/modules/ShinkanshenLocal.ts --network localhost --reset && node scripts/export-web.ts",
+    "deploy:bscTestnet": "hardhat ignition deploy ignition/modules/Shinkanshen.ts --network bscTestnet --parameters ignition/parameters/bscTestnet.json && node scripts/export-web.ts",
+    "deploy:bsc": "hardhat ignition deploy ignition/modules/Shinkanshen.ts --network bsc --parameters ignition/parameters/bsc.json && node scripts/export-web.ts",
+    "export:web": "hardhat build && node scripts/export-web.ts"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.1.9",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.7",
+    "@openzeppelin/contracts": "^5.6.1",
+    "@types/node": "^22.20.5",
+    "forge-std": "github:foundry-rs/forge-std#v1.17.0",
+    "hardhat": "^3.21.2",
+    "typescript": "~6.0.3",
+    "viem": "^2.57.16"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "Shinkanshen": {
+    "initialSupply": "10000000000000000000000000n",
+    "rewardPerSecond": "250000000000000000n",
+    "startTime": "0n",
+    "shkAllocPoint": "100n"
+  }
+}
