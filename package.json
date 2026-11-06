@@ -2,6 +2,7 @@
   "name": "shinkanshen",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "Shinkanshen \u2014 Token Staking & Yield Farming DApp for the BNB Smart Chain (BEP-20) ecosystem",
   "type": "module",
   "packageManager": "pnpm@10.34.2",

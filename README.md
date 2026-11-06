@@ -79,3 +79,7 @@ RPC endpoints default to public BNB Chain nodes; override with `BSC_RPC_URL` / `
 ## Security
 
 The contracts are tested but **unaudited**. Mock tokens have an open faucet and must never be deployed to a public network. Review parameters (`rewardPerSecond`, allocation points, `startTime`) carefully before a mainnet deployment and consider transferring ownership of the token and farm to a multisig (`transferOwnership` + `acceptOwnership`).
+
+## License
+
+[MIT](./LICENSE)
