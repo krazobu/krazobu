@@ -8,7 +8,7 @@ export function ChainSelector({ chainId }: { chainId: SupportedChainId }) {
   return (
     <select
       aria-label="Network"
-      className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-100 outline-none focus:border-emerald-400/60"
+      className="max-w-[11rem] rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-100 outline-none focus:border-shk-400/60"
       value={chainId}
       disabled={switchChain.isPending}
       onChange={(e) => switchChain.mutate({ chainId: Number(e.target.value) as SupportedChainId })}

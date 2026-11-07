@@ -6,9 +6,18 @@ Stake SHK or PancakeSwap LP tokens into Shinkanshen pools and earn SHK every sec
 
 ```
 contracts/   Solidity (0.8.34) · Hardhat 3 · OpenZeppelin 5 · Ignition deployments · node:test + viem tests
-web/         React 19 · Vite 8 · wagmi 3 · viem · TanStack Query · Tailwind 4
+web/         React 19 · Vite 8 · wagmi 3 · viem · TanStack Query · Tailwind 4 — marketing site (/) + staking app (/app)
 scripts/     dev-local.mjs — one-command local stack (Hardhat node → deploy → Vite)
 ```
+
+## Website
+
+The web app serves two routes from a single bundle:
+
+- `/` — the landing site: animated hero, features, how-it-works, tokenomics, a live "departures board" of pools, FAQ. Live numbers are read straight from the farm on the selected network.
+- `/app` — the staking dashboard (connect wallet, stake / unstake / harvest).
+
+Routing is client-side, so static hosts need an SPA fallback that rewrites unknown paths to `index.html` (Netlify `_redirects`, Vercel `rewrites`; Cloudflare Pages does this automatically). Fonts are self-hosted via `@fontsource-variable`, and all animations respect `prefers-reduced-motion`.
 
 ## Contracts
 
