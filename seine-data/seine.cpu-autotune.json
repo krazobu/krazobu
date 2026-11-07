@@ -1,0 +1,46 @@
+{
+  "schema_version": 11,
+  "profile": "balanced",
+  "affinity": "auto",
+  "page_mode": "auto",
+  "cpu_instances": 1,
+  "min_threads": 1,
+  "max_threads": 1,
+  "selected_threads": 1,
+  "measured_hps": 0.0,
+  "autotune_secs": 6,
+  "host_fingerprint": {
+    "cpu_brand": "unknown",
+    "cpu_arch": "x86_64",
+    "logical_cores": 1,
+    "physical_cores": 2,
+    "total_memory_bytes": 8589934592,
+    "os": "linux",
+    "kernel_version": "4.19.0-gvisor",
+    "runtime_environment": "native",
+    "build_fingerprint": "source=e608ebde45156e63;target=x86_64-unknown-linux-gnu;profile=release;opt=3;rustc=rustc 1.93.0 (254b59607 2026-01-19);rustflags=;features=amd,default,nvidia",
+    "affinity_topology": "{0, 1}:None"
+  },
+  "timestamp_unix_secs": 1794058485,
+  "measurements": {},
+  "memory_limited": false,
+  "mining_measurement": true,
+  "search": {
+    "threads": 1,
+    "kernel": "avx512-stream-l2",
+    "hps": 0.0,
+    "ram_limit": null,
+    "hot_fingerprint": "source=2e4ba81ff77e938e;target=x86_64-unknown-linux-gnu;opt=3;rustc=rustc 1.93.0 (254b59607 2026-01-19);rustflags=",
+    "kernel_revisions": {
+      "avx2": 1,
+      "avx512": 1,
+      "avx512-stream-l2": 1
+    },
+    "kernels": [],
+    "rechecks": [],
+    "bounds": [
+      1,
+      1
+    ]
+  }
+}
