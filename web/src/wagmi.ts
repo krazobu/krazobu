@@ -4,7 +4,8 @@ import { injected } from 'wagmi/connectors'
 
 import { deployedChainIds } from './contracts'
 
-const allChains = [bsc, bscTestnet, hardhat] as const
+// The local Hardhat chain only exists on a developer machine, so production builds never offer it.
+const allChains = [bsc, bscTestnet, ...(import.meta.env.DEV ? [hardhat] : [])] as const
 // Networks with a deployed farm come first so the app opens on a usable chain.
 export const chains = [...allChains].sort(
   (a, b) => Number(deployedChainIds.includes(b.id)) - Number(deployedChainIds.includes(a.id)),
