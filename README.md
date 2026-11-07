@@ -1,85 +1,134 @@
-# Shinkanshen
+<p align="center">
+  <img src="docs/assets/brand/banner.jpg" alt="seine — the fastest Blocknet miner" width="900">
+</p>
 
-**Token Staking & Yield Farming DApp for the BNB Smart Chain (BEP-20) ecosystem.**
+<p align="center">
+  <b>The fastest miner for <a href="https://blocknetcrypto.com">Blocknet</a>.</b><br>
+  Tuned kernels for every modern CPU and NVIDIA GPU, zero configuration. Download, run, mine.
+</p>
 
-Stake SHK or PancakeSwap LP tokens into Shinkanshen pools and earn SHK every second. Rewards are minted on demand by the farm, split across pools by allocation points, and hard-capped at 100M SHK.
+<p align="center">
+  <a href="../../releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/zpalmtree/seine?style=flat-square&color=1BA3A0&labelColor=063B44"></a>
+  <a href="../../releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/zpalmtree/seine/total?style=flat-square&color=1BA3A0&labelColor=063B44"></a>
+  <img alt="Platforms" src="https://img.shields.io/badge/Windows%20·%20Linux%20·%20macOS-x86__64%20%2B%20ARM64-1BA3A0?style=flat-square&labelColor=063B44">
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-BSD--3-1BA3A0?style=flat-square&labelColor=063B44"></a>
+</p>
 
+<p align="center">
+  <img src="docs/assets/screenshots/dashboard.png" alt="seine mining on bntpool from an Apple M4 Max at 30 H/s, 5 of 5 shares accepted" width="900">
+</p>
+
+## Exchange deposits
+
+For an exchange that requires a memo, use both its full deposit address and your
+own deposit memo with a pool that supports memo payouts:
+
+```sh
+./seine --address 'EXCHANGE_ADDRESS' --payout-memo 'YOUR_DEPOSIT_MEMO'
 ```
-contracts/   Solidity (0.8.34) · Hardhat 3 · OpenZeppelin 5 · Ignition deployments · node:test + viem tests
-web/         React 19 · Vite 8 · wagmi 3 · viem · TanStack Query · Tailwind 4
-scripts/     dev-local.mjs — one-command local stack (Hardhat node → deploy → Vite)
-```
 
-## Contracts
+Seine checks pool support before mining and shows the payout minimum when the
+pool provides it. Known shared addresses require a memo; interactive startup
+prompts for a missing memo, including for saved addresses. Unknown or rotated addresses can use `--payout-memo` too. Personal
+wallets and ordinary Blocknet IDs need no new flag. Memo mining requires the full
+address and is not supported in daemon mode or through Seine farm proxies.
 
-| Contract | Purpose |
-| --- | --- |
-| `ShinkanshenToken` (SHK) | BEP-20 reward token: ERC-20 + `getOwner()`, EIP-2612 permit, burnable, `Ownable2Step`. Minting is restricted to owner-approved minters and capped at `MAX_SUPPLY = 100,000,000 SHK`. |
-| `ShinkanshenFarm` | MasterChef-style farm. Owner adds BEP-20 stake tokens as pools with allocation points; users `deposit` / `withdraw` / `harvest` / `emergencyWithdraw`. Rewards accrue per second and are minted on pool updates. |
-| `mocks/MockBEP20`, `mocks/MockFeeOnTransferToken` | Local-development and test tokens with an open `mint` faucet. **Never deploy on BSC.** |
+Setup saves the memo with the address, preserving case and leading zeros. A memo
+entered for a command-line address override is used only for that run. When
+changing a saved exchange address, explicitly provide the new memo, or use
+`--no-payout-memo` to switch to a personal wallet. A changed address or memo has a
+separate pool balance. Command-line overrides apply to the current run; edit
+`seine-data/seine.config.json` to change saved settings. On the pool Stats page,
+enter both the address and memo.
 
-Design notes for the farm:
+See [exchange payouts](docs/EXCHANGE_PAYOUTS.md) for pool compatibility.
 
-- **Time based**, not block based, so emissions are predictable on BSC's ~3 s blocks (`rewardPerSecond`, bounded by `MAX_REWARD_PER_SECOND`).
-- Each pool tracks `totalStaked` instead of `balanceOf(this)`, so SHK can be both a stake token (pool 0) and the reward token, and stray transfers cannot distort accounting.
-- Deposits credit the amount actually received, so fee-on-transfer tokens are safe.
-- `add` / `set` / `setRewardPerSecond` settle all pools first, so parameter changes only apply going forward; setting a pool's allocation to 0 retires it while leaving stakes withdrawable.
-- Emissions stop cleanly at `MAX_SUPPLY`; when nothing is mintable, rewards are simply 0 and deposits/withdrawals keep working.
-- `emergencyWithdraw` never touches reward accounting, `recoverERC20` can never move stake or reward tokens, and all user entry points are `nonReentrant`.
+## Why seine
 
-## Quick start (local)
+- **Fast on whatever you own.** Hand-tuned Argon2id kernels for AVX2, AVX-512,
+  Arm NEON/SHA3 and NVIDIA Blackwell. Seine benchmarks them *while it mines* and
+  keeps the fastest for your machine.
+- **Zero configuration.** Run `./seine`, paste your address, and you're mining in
+  seconds. Threads, kernels, memory and CPU placement tune themselves.
+- **CPU and GPU together.** Every core and every NVIDIA GPU mines at once.
+- **Pool or solo.** Mines on [bntpool.com](https://bntpool.com) out of the box, works
+  with any Stratum pool, or solo against your own Blocknet node.
+- **Built for rigs and fleets.** NUMA-aware placement, huge pages, a local control
+  API with live events, and Prometheus metrics.
 
-Requirements: Node ≥ 22 and pnpm 10.
+[Windows setup guide](https://seineminer.com/blog/mine-blocknet-on-windows/) · [Connect to bntpool.com](https://bntpool.com/blog/mine-blocknet-on-bntpool/) · [Mining locally but pool hashrate is zero?](https://bntpool.com/blog/track-your-miner-on-bntpool/#zero-hashrate)
+
+## Get started
+
+**1. Download** the archive for your platform from the
+[latest release](../../releases/latest):
+
+| Platform | Archive | GPU |
+|---|---|---|
+| Windows x86_64 | `seine-windows-x86_64.zip` | NVIDIA (drivers only, CUDA runtime bundled), AMD Radeon RDNA (AMD driver) |
+| Linux x86_64 | `seine-linux-x86_64.tar.gz` | NVIDIA (driver only), AMD Radeon RDNA (ROCm HIP runtime) |
+| Linux ARM64 | `seine-linux-aarch64.tar.gz` | CPU only |
+| macOS Apple Silicon | `seine-macos-aarch64.tar.gz` | CPU; Metal GPU for BLAKE2b blocks |
+| macOS Intel | `seine-macos-x86_64.tar.gz` | CPU only |
+| HiveOS rigs | `seine-hiveos-<version>.tar.gz` | NVIDIA (NVRTC bundled), AMD; see the [HiveOS guide](docs/guides/hiveos.md) |
+| mmpOS rigs | `seine-mmpos-<version>.tar.gz` | NVIDIA (NVRTC bundled), AMD; see the [mmpOS guide](docs/guides/mmpos.md) |
+
+The Linux builds run on glibc 2.31 or newer: Ubuntu 20.04, Debian 11 and later.
+
+**2. Run it:**
 
 ```bash
-pnpm install
-pnpm test          # contract test suite (22 tests)
-pnpm dev:local     # Hardhat node (3 s blocks) → deploy ShinkanshenLocal → Vite on http://localhost:5173
+./seine
 ```
 
-`pnpm dev:local` deploys SHK, the farm and two mock pools (Cake-LP and USDT), then writes the addresses to `web/src/contracts/deployments.json`. To use the UI with MetaMask:
+**3. Enter your Blocknet address** (or `@shortname`) when prompted, and accept the
+default pool. That's it: seine starts hashing straight away and tunes
+itself as it goes.
 
-1. Add the Hardhat network (RPC `http://127.0.0.1:8545`, chain id `31337`) — the in-app network selector can prompt this for you.
-2. Import Hardhat account #0 (private key printed by the node; it holds 10M SHK and the mock tokens), or use the per-pool **Faucet** button to mint test tokens.
-3. Pick a pool, approve, stake, and watch rewards accrue every block.
+Each CPU thread needs about 2 GB of RAM. Seine sizes itself to your machine
+automatically. More options: [setup and configuration](docs/guides/configuration.md).
 
-Run the pieces separately if you prefer: `pnpm chain`, then `pnpm deploy:local`, then `pnpm dev`.
+## Performance
 
-## Deploying to BNB Smart Chain
+<p align="center">
+  <img src="docs/assets/charts/best.svg" alt="Best measured hashrate by platform: AMD EPYC 9355P Zen 5 97.1 H/s, EPYC 9554P Zen 4 81.4, Arm server (AWS Graviton4) 39.3, Apple M4 Max 30.9, Intel Xeon 26.0" width="900">
+</p>
 
-Secrets live in the Hardhat keystore, never in files:
+**97.1 H/s on the AMD EPYC 9355P** with default settings, and **81.4 H/s on
+the EPYC 9554P** with 128 mining threads selected automatically.
+[Measurements and settings](docs/PERFORMANCE.md).
 
-```bash
-cd contracts
-npx hardhat keystore set BSC_PRIVATE_KEY      # deployer / farm owner
-npx hardhat keystore set ETHERSCAN_API_KEY    # Etherscan v2 key (covers BscScan) — only needed for verification
-```
+These are measured results on the stated hardware and settings. Results for every CPU tested:
+**[performance results](docs/PERFORMANCE.md)**.
 
-Tune `ignition/parameters/bscTestnet.json` / `bsc.json` (`initialSupply`, `rewardPerSecond`, `startTime`, `shkAllocPoint`; bigints are strings with an `n` suffix), then:
+## Get the most from your hardware
 
-```bash
-pnpm deploy:bscTestnet   # or pnpm deploy:bsc
-npx hardhat verify --network bscTestnet <address> <constructor args…>
-```
+Seine is fast out of the box. These guides cover the last few percent:
 
-Deployment writes the new addresses into `web/src/contracts/deployments.json`, and the app automatically lists the network. Add farming pools afterwards from the owner account, e.g. a PancakeSwap SHK/BNB LP token: `farm.add(300, <lpTokenAddress>)`.
+| Hardware | Guide |
+|---|---|
+| Linux / WSL | [Huge pages](docs/guides/linux-hugepages.md): +4–8% on CPU |
+| Windows | [Large pages and CPU placement](docs/guides/windows-large-pages.md) |
+| EPYC, Xeon, many-core servers | [NUMA, L3 groups and memory headroom](docs/guides/large-servers.md) |
+| Apple Silicon | [Threads, scheduling and Metal](docs/guides/apple-silicon.md) |
+| NVIDIA GPUs | [Requirements, multi-GPU and tuning](docs/guides/nvidia.md) |
 
-RPC endpoints default to public BNB Chain nodes; override with `BSC_RPC_URL` / `BSC_TESTNET_RPC_URL` (contracts) and `VITE_BSC_RPC_URL` / `VITE_BSC_TESTNET_RPC_URL` (web). See the `.env.example` files.
+## Documentation
 
-## Scripts
-
-| Command | What it does |
-| --- | --- |
-| `pnpm test` | Hardhat test suite (`contracts/test/*.ts`) |
-| `pnpm typecheck` | `hardhat build && tsc --noEmit` for contracts, `tsc -b` for web |
-| `pnpm build` | Compile contracts and build the web app |
-| `pnpm export:web` | Re-export ABIs + deployment addresses into `web/src/contracts/` |
-| `pnpm --filter @shinkanshen/web lint` | oxlint |
-
-## Security
-
-The contracts are tested but **unaudited**. Mock tokens have an open faucet and must never be deployed to a public network. Review parameters (`rewardPerSecond`, allocation points, `startTime`) carefully before a mainnet deployment and consider transferring ownership of the token and farm to a multisig (`transferOwnership` + `acceptOwnership`).
+- [Setup and configuration](docs/guides/configuration.md): first run, flags, dashboard controls, shortnames, dev fee
+- [How automatic tuning works](docs/guides/autotuning.md): thread counts, CPU kernels, memory recovery
+- [Solo mining](docs/guides/solo-mining.md): mine against your own Blocknet node
+- [HiveOS](docs/guides/hiveos.md): add seine to a flight sheet with one installation URL
+- [mmpOS](docs/guides/mmpos.md): add seine to a miner profile with one download URL
+- [Farm proxy](docs/guides/farm-proxy.md): many rigs, one pool connection
+- [Control API](docs/API.md): REST, live events and metrics for dashboards ([OpenAPI](docs/openapi/seine-api-v1.yaml))
+- [Flag reference](docs/MINER_FLAGS.md): every command-line option
+- [Building from source](docs/BUILDING.md)
+- [Changelog](CHANGELOG.md)
+- For contributors: [architecture and agent notes](AGENTS.md)
 
 ## License
 
-[MIT](./LICENSE)
+[Privacy policy](PRIVACY.md).
+
+[BSD 3-Clause](LICENSE).
