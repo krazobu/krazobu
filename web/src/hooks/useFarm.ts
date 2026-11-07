@@ -12,9 +12,9 @@ export type PoolInfo = {
   totalStaked: bigint
 }
 
-export function useFarmOverview(deployment: Deployment, chainId: SupportedChainId) {
-  const farm = { address: deployment.farm, abi: shinkanshenFarmAbi, chainId } as const
-  const token = { address: deployment.token, abi: shinkanshenTokenAbi, chainId } as const
+export function useFarmOverview(deployment: Deployment | undefined, chainId: SupportedChainId) {
+  const farm = { address: deployment?.farm ?? zeroAddress, abi: shinkanshenFarmAbi, chainId } as const
+  const token = { address: deployment?.token ?? zeroAddress, abi: shinkanshenTokenAbi, chainId } as const
 
   const query = useReadContracts({
     contracts: [
@@ -26,7 +26,7 @@ export function useFarmOverview(deployment: Deployment, chainId: SupportedChainI
       { ...token, functionName: 'MAX_SUPPLY' },
     ],
     allowFailure: false,
-    query: { refetchInterval: 15_000 },
+    query: { enabled: deployment !== undefined, refetchInterval: 15_000 },
   })
 
   const [pools, rewardPerSecond, totalAllocPoint, startTime, totalSupply, maxSupply] = query.data ?? []
